@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✧ Noashka's Whimsy Diary ✧</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&amp;family=Pinyon+Script&amp;family=Sevillana&amp;family=Style+Script&amp;family=Emilys+Candy&amp;display=swap" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&amp;family=Pinyon+Script&amp;family=Sevillana&amp;family=Style+Script&amp;family=Emilys+Candy&amp;display=swap');
+        
+        :root {
+            --brown-coffee: #461D3A;
+            --japanese-violet: #502A50;
+            --dark-raspberry: #7E2A53;
+            --pearly-purple: #BA71A2;
+            --classic-rose: #ECD0EC;
+        }
+        
+        body {
+            font-family: 'Style Script', cursive;
+        }
+        
+        .title-font { font-family: 'Great Vibes', cursive; }
+        .diary-font { font-family: 'Pinyon Script', cursive; }
+        .accent-font { font-family: 'Sevillana', cursive; }
+        .fancy-font { font-family: 'Emilys Candy', cursive; }
+        
+        .bg-beach {
+            background-image: url('https://picsum.photos/id/1015/2000/1200');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .scrapbook-page {
+            background: linear-gradient(#ECD0EC, #BA71A2);
+            box-shadow: 0 0 60px rgba(186, 113, 162, 0.6),
+                        inset 0 0 80px rgba(236, 208, 236, 0.4);
+            border: 12px solid #502A50;
+            border-image: linear-gradient(#7E2A53, #461D3A) 1;
+        }
+        
+        .swirl {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            background: url('https://imgur.com/pLOxBF1') no-repeat center;
+            background-size: contain;
+            opacity: 0.15;
+            animation: swirlRotate 25s linear infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes swirlRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .photo-frame {
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .photo-frame:hover {
+            transform: scale(1.08) rotate(2deg);
+            box-shadow: 0 25px 50px -12px rgb(126 42 83);
+        }
+        
+        .key {
+            animation: keyUnlock 3s forwards;
+        }
+        
+        @keyframes keyUnlock {
+            0% { transform: rotate(-25deg) translateY(100px); opacity: 0; }
+            50% { transform: rotate(10deg) translateY(-20px); }
+            100% { transform: rotate(0deg) translateY(0); opacity: 1; }
+        }
+        
+        .diary-text {
+            font-family: 'Pinyon Script', cursive;
+            font-size: 1.35rem;
+            line-height: 1.7;
+        }
+    </style>
+</head>
+<body class="bg-[#461D3A] text-[#ECD0EC] overflow-hidden">
+    <!-- PASSWORD SCREEN -->
+    <div id="password-screen" class="fixed inset-0 bg-black/90 flex items-center justify-center z-50">
+        <div class="relative w-full h-full bg-beach flex flex-col items-center justify-center text-center px-6">
+            <!-- Background swirls -->
+            <div class="swirl top-10 left-10" style="animation-duration: 35s;"></div>
+            <div class="swirl top-1/3 right-20" style="animation-duration: 28s; animation-direction: reverse;"></div>
+            <div class="swirl bottom-1/4 left-1/3" style="animation-duration: 42s;"></div>
+            
+            <div class="max-w-md mx-auto">
+                <h1 class="title-font text-7xl mb-8 text-[#ECD0EC] tracking-widest drop-shadow-2xl">Secret Diary</h1>
+                <p class="text-[#BA71A2] text-xl mb-10 diary-font">Only the curious may enter...</p>
+                
+                <div class="mb-8">
+                    <input id="password-input" 
+                           type="password"
+                           placeholder="enter the phrase"
+                           class="w-full bg-[#502A50]/80 border-4 border-[#7E2A53] text-[#ECD0EC] text-center py-6 text-2xl focus:outline-none focus:border-[#BA71A2] rounded-xl">
+                </div>
+                
+                <button onclick="checkPassword()" 
+                        class="px-16 py-4 bg-[#7E2A53] hover:bg-[#BA71A2] text-[#ECD0EC] text-2xl accent-font tracking-widest rounded-2xl transition-all active:scale-95">
+                    UNLOCK
+                </button>
+                
+                <p id="error-msg" class="text-red-300 mt-6 text-sm hidden">The stars whisper... try again.</p>
+            </div>
+            
+            <!-- Floating key hint -->
+            <div class="absolute bottom-12 text-[#ECD0EC]/40 text-sm diary-font">
+                seek out the truth
+            </div>
+        </div>
+    </div>
+
+    <!-- KEY ANIMATION OVERLAY -->
+    <div id="key-overlay" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[60]">
+        <div class="text-center">
+            <img id="key-image" src="https://imgur.com/688yyhf" 
+                 class="key mx-auto w-64 drop-shadow-2xl" alt="Mystical Key">
+            <p class="mt-8 text-3xl title-font text-[#ECD0EC]">The key turns...</p>
+        </div>
+    </div>
+
+    <!-- MAIN DIARY -->
+    <div id="main-diary" class="hidden min-h-screen relative">
+        <!-- Background -->
+        <div class="fixed inset-0 bg-beach opacity-90"></div>
+        <div class="fixed inset-0 bg-gradient-to-b from-[#502A50]/40 via-transparent to-[#461D3A]/70"></div>
+        
+        <!-- Floating decorative swirls -->
+        <div class="swirl top-12 left-12" style="width: 180px; height: 180px; opacity: 0.2;"></div>
+        <div class="swirl top-1/2 right-16" style="width: 140px; height: 140px; animation-duration: 45s; opacity: 0.18;"></div>
+        <div class="swirl bottom-20 left-1/4" style="width: 200px; height: 200px; animation-duration: 32s; opacity: 0.15;"></div>
+        
+        <div class="relative z-10 max-w-6xl mx-auto pt-8 px-6">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-10">
+                <div class="flex items-center gap-4">
+                    <div class="w-16 h-16 bg-[#BA71A2] rounded-full border-8 border-[#ECD0EC] flex items-center justify-center text-4xl">🌙</div>
+                    <div>
+                        <h1 class="title-font text-6xl text-[#ECD0EC] tracking-wider">Noashka's Whimsy Book</h1>
+                        <p class="accent-font text-[#7E2A53] text-2xl -mt-3">8th Birthday Edition</p>
+                    </div>
+                </div>
+                <div onclick="lockDiary()" 
+                     class="cursor-pointer px-6 py-3 bg-[#502A50] hover:bg-[#7E2A53] rounded-3xl text-sm flex items-center gap-2 transition-colors">
+                    <span class="text-xl">🔑</span>
+                    <span class="diary-font">Lock Diary</span>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Left Column: Photos -->
+                <div class="lg:col-span-5">
+                    <div class="scrapbook-page rounded-3xl p-8">
+                        <h2 class="accent-font text-4xl text-[#461D3A] mb-6 text-center">Captured Moments</h2>
+                        
+                        <div class="grid grid-cols-2 gap-6">
+                            <!-- Photo 1 -->
+                            <div class="photo-frame bg-white p-2 shadow-xl">
+                                <img src="https://imgur.com/KwxiMvD" 
+                                     class="w-full h-64 object-cover rounded-xl" alt="Mountain view">
+                                <p class="text-center text-[#502A50] text-sm mt-2 diary-font">Snowy adventures</p>
+                            </div>
+                            
+                            <!-- Photo 2 -->
+                            <div class="photo-frame bg-white p-2 shadow-xl">
+                                <img src="https://imgur.com/undefined" 
+                                     class="w-full h-64 object-cover rounded-xl" alt="https://imgur.com/a/CTPAQGM">
+                                <p class="text-center text-[#502A50] text-sm mt-2 diary-font">Siblings forever</p>
+                            </div>
+                            
+                            <!-- Photo 3 -->
+                            <div class="photo-frame bg-white p-2 shadow-xl">
+                                <img src="https://imgur.com/znuwwN5" 
+                                     class="w-full h-64 object-cover rounded-xl" alt="Smokey Bear">
+                                <p class="text-center text-[#502A50] text-sm mt-2 diary-font">Forest friends</p>
+                            </div>
+                            
+                            <!-- Photo 4 -->
+                            <div class="photo-frame bg-white p-2 shadow-xl">
+                                <img src="https://imgur.com/j5QF0c5" 
+                                     class="w-full h-64 object-cover rounded-xl" alt="Big chair">
+                                <p class="text-center text-[#502A50] text-sm mt-2 diary-font">Helen, GA memories</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Cat Photo -->
+                        <div class="mt-8 photo-frame bg-white p-3 shadow-2xl mx-auto max-w-xs">
+                            <img src="https://imgur.com/ZYiw2eF" 
+                                 class="w-full rounded-2xl" alt="Fluffy cat">
+                            <p class="text-center text-[#502A50] text-sm mt-3 diary-font">My magical companion</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right Column: Diary Entry -->
+                <div class="lg:col-span-7">
+                    <div class="scrapbook-page rounded-3xl p-10 h-full">
+                        <div class="border-b-4 border-dashed border-[#7E2A53] pb-6 mb-8">
+                            <h2 class="title-font text-5xl text-[#461D3A] text-center">Dear Nurse Noashka</h2>
+                            <div class="flex justify-center gap-8 mt-4 text-[#7E2A53]">
+                                <div class="text-center">
+                                    <span class="block text-xs">8th Birthday</span>
+                                </div>
+                                <div>✧</div>
+                                <div class="text-center">
+                                    <span class="block text-xs">June 2026</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="diary-text text-[#461D3A] leading-relaxed">
+                            Lovely Greetings, Nurse Noashka! It’s me, Dr. Doodle, AKA Brynn. I just wanted to say happy 8th birthday, and that I appreciate you very much. You are a very kind soul with so much bubbling energy, that can make anyone smile, so don’t let anyone dim your light or stop you from thinking otherwise. If someone ever tries to hurt you, tell me and I will beat them up (just kidding!!). Keep nurturing your curiosity/love for learning, compassion, and bright spirits--as it will take you very far in life. Love you, and hope your birthday is as awesome as you are!! 
+                            <br><br>
+                            - Brynn
+                            <br><br>
+                            <span class="text-[#7E2A53] text-lg">(P.S., “Happy Birthday” in Russian is “С днём рождения.”)</span>
+                            <br>
+                            <span class="text-[#7E2A53] text-lg">(P.P.S., Don’t listen to Daniel if he is being rude, he can be a butthole sometimes)</span>
+                        </div>
+                        
+                        <!-- Decorative footer -->
+                        <div class="mt-12 flex justify-center">
+                            <div class="px-8 py-2 bg-[#BA71A2]/30 text-[#461D3A] rounded-3xl accent-font text-xl flex items-center gap-3">
+                                <span>🌟</span>
+                                Made with sparkles and love
+                                <span>🌟</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Bottom navigation / extra photos -->
+            <div class="mt-12 flex gap-6 overflow-x-auto pb-8">
+                <div class="photo-frame min-w-[220px] bg-white/90 p-2 shadow-xl flex-shrink-0">
+                    <img src="https://imgur.com/zhD39YJ" class="rounded-xl" alt="">
+                </div>
+                <div class="photo-frame min-w-[220px] bg-white/90 p-2 shadow-xl flex-shrink-0">
+                    <img src="https://imgur.com/8aBBgy5" class="rounded-xl" alt="">
+                </div>
+                <div class="photo-frame min-w-[220px] bg-white/90 p-2 shadow-xl flex-shrink-0">
+                    <img src="https://picsum.photos/id/201/800/600" class="rounded-xl" alt="">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <footer class="relative z-10 text-center py-8 text-[#BA71A2]/70 text-sm diary-font">
+            Noashka's Magical Scrapbook • Keep shining bright
+        </footer>
+    </div>
+
+    <script>
+        function checkPassword() {
+            const input = document.getElementById('password-input').value.trim().toLowerCase();
+            const errorMsg = document.getElementById('error-msg');
+            
+            if (input === "seek out the truth") {
+                errorMsg.classList.add('hidden');
+                unlockDiary();
+            } else {
+                errorMsg.classList.remove('hidden');
+                setTimeout(() => errorMsg.classList.add('hidden'), 2500);
+            }
+        }
+        
+        function unlockDiary() {
+            const passwordScreen = document.getElementById('password-screen');
+            const keyOverlay = document.getElementById('key-overlay');
+            
+            passwordScreen.style.transition = 'opacity 1s';
+            passwordScreen.style.opacity = '0';
+            
+            setTimeout(() => {
+                passwordScreen.classList.add('hidden');
+                keyOverlay.classList.remove('hidden');
+                
+                // Auto proceed after key animation
+                setTimeout(() => {
+                    keyOverlay.style.transition = 'opacity 1.5s';
+                    keyOverlay.style.opacity = '0';
+                    
+                    setTimeout(() => {
+                        keyOverlay.classList.add('hidden');
+                        document.getElementById('main-diary').classList.remove('hidden');
+                    }, 1600);
+                }, 2800);
+            }, 900);
+        }
+        
+        function lockDiary() {
+            if (confirm("Lock the diary and return to the password screen?")) {
+                location.reload();
+            }
+        }
+        
+        // Tailwind script already loaded
+        document.documentElement.style.setProperty('--tw-ring-color', '#BA71A2');
+        
+        // Keyboard support for password
+        document.getElementById('password-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkPassword();
+            }
+        });
+        
+        // Make it feel more alive with subtle background movement
+        setInterval(() => {
+            const beach = document.querySelector('.bg-beach');
+            if (beach) {
+                beach.style.backgroundPosition = `${Math.random() * 4 - 2}% center`;
+            }
+        }, 8000);
+    </script>
+</body>
+</html>
